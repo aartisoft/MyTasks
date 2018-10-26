@@ -10,9 +10,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import p32929.androideasysql_library.Column;
+import p32929.androideasysql_library.DataType;
+import p32929.androideasysql_library.EasyDB;
+
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder> {
 
-    private ArrayList<TodoModel> todos = new ArrayList<>();
+    private ArrayList<TodoModel> todos;
     private Context context;
 
     public TodoAdapter(ArrayList<TodoModel> todos, Context context) {
@@ -27,10 +31,29 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         return new TodoViewHolder(itemView);
     }
 
+    public void swapItems(ArrayList<TodoModel> todos){
+        this.todos = todos;
+        notifyDataSetChanged();
+    }
+
     @Override
-    public void onBindViewHolder(@NonNull TodoAdapter.TodoViewHolder todoViewHolder, int position) {
+    public void onBindViewHolder(@NonNull TodoAdapter.TodoViewHolder todoViewHolder, final int position) {
 
         todoViewHolder.todoText.setText(todos.get(position).getTodo());
+
+        todoViewHolder.todoText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EasyDB completedListDB = EasyDB.init(context, "TODODBCOMPLETED", null, 1)
+                        .setTableName("completedListDB")
+                        .addColumn(new Column("COMPLETED", new DataType()._text_().notNull().done()))
+                        .doneTableColumn();
+
+                MainActivity mainActivity = new MainActivity();
+                completedListDB.addData("COMPLETED", todos.get(position).getTodo())
+                        .doneDataAdding();
+            }
+        });
 
     }
 
@@ -42,6 +65,10 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     public class TodoViewHolder extends RecyclerView.ViewHolder {
 
         TextView todoText;
+
+        public TextView getTodoText() {
+            return todoText;
+        }
 
         public TodoViewHolder(@NonNull View itemView) {
             super(itemView);

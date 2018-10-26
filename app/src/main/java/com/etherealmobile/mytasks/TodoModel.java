@@ -2,6 +2,8 @@ package com.etherealmobile.mytasks;
 
 public class TodoModel {
 
+
+
     private String todo;
 
     public TodoModel(String todo) {
