@@ -48,7 +48,7 @@
                 android:background="@drawable/ic_twotone_view_agenda_24px"
                 android:clickable="true"
                 android:focusable="true"
-                android:onClick="hehe"/>
+                />
 
         </RelativeLayout>
 

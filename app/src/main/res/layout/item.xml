@@ -7,11 +7,21 @@
         android:id="@+id/item_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:fontFamily="@font/roboto"
         android:paddingStart="8dp"
         android:text="Buy Oranges"
         android:textColor="@color/BLACK"
         android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/delete"
+        android:layout_alignEnd="@id/item_text"
+        android:background="@drawable/ic_delete_blue_24dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
 
 </RelativeLayout>

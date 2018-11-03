@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -37,19 +38,21 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TodoAdapter.TodoViewHolder todoViewHolder, final int position) {
+    public void onBindViewHolder(@NonNull final TodoAdapter.TodoViewHolder todoViewHolder, final int position) {
 
         todoViewHolder.todoText.setText(todos.get(position).getTodo());
 
-        todoViewHolder.todoText.setOnClickListener(new View.OnClickListener() {
+        todoViewHolder.deletedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final EasyDB completedListDB = EasyDB.init(context, "TODODBCOMPLETED", null, 1)
                         .setTableName("completedListDB")
                         .addColumn(new Column("COMPLETED", new DataType()._text_().notNull().done()))
                         .doneTableColumn();
-
-                MainActivity mainActivity = new MainActivity();
+                EasyDB easyDB = EasyDB.init(context, "TODODB", null, 1)
+                        .setTableName("TODO TABLE")
+                        .doneTableColumn();
+                easyDB.deleteRow(position);
                 completedListDB.addData("COMPLETED", todos.get(position).getTodo())
                         .doneDataAdding();
             }
@@ -65,6 +68,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     public class TodoViewHolder extends RecyclerView.ViewHolder {
 
         TextView todoText;
+        Button deletedButton;
 
         public TextView getTodoText() {
             return todoText;
@@ -73,6 +77,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         public TodoViewHolder(@NonNull View itemView) {
             super(itemView);
             todoText = itemView.findViewById(R.id.item_text);
+            deletedButton = itemView.findViewById(R.id.delete);
         }
     }
 }

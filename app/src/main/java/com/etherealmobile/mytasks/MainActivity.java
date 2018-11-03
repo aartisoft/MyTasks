@@ -29,17 +29,22 @@ import p32929.androideasysql_library.EasyDB;
 public class MainActivity extends AppCompatActivity {
 
     public String todoTextsDb;
-    private String name = "John";
     private TextView whosTask, task;
 
     private ArrayList<TodoModel> todos = new ArrayList<>();
     private DrawerLayout drawer;
+    String sName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         task = findViewById(R.id.item_text);
+
+
+        whosTask = findViewById(R.id.whos_task_tv);
+
+        whosTask.setText("My Tasks");
 
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -51,40 +56,41 @@ public class MainActivity extends AppCompatActivity {
 
         Cursor cursor = easyDB.getAllData();
         //todos.clear();
-        while(cursor.moveToNext()){
-            todoTextsDb = cursor.getString( 1 );
+        while (cursor.moveToNext()) {
+            todoTextsDb = cursor.getString(1);
             todos.add(new TodoModel(todoTextsDb));
         }
 
-
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+        final View view1 = inflater.inflate(R.layout.change_name_dialogue, null);
+        builder.setMessage("Set Your Name");
+        final EditText changeName = view1.findViewById(R.id.change_name_et);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) { ;
                 int id = menuItem.getItemId();
-                switch (id){
-                    case R.id.nav_change_name:
-                        changeName();
-                        break;
+                switch (id) {
                     case R.id.nav_delete_all:
                         easyDB.deleteAllDataFromTable();
                         drawer.closeDrawer(Gravity.START);
                         MainActivity.this.recreate();
                         break;
                     case R.id.completed_list:
-                         startActivity(new Intent(MainActivity.this, CompletedTodoActivity.class));
+                        startActivity(new Intent(MainActivity.this, CompletedTodoActivity.class));
                 }
                 return true;
             }
         });
 
-        whosTask = findViewById(R.id.whos_task_tv);
+
 
         RecyclerView recyclerView = findViewById(R.id.todo_recyclerView);
 
         final TodoAdapter todoAdapter = new TodoAdapter(todos, this);
         recyclerView.setAdapter(todoAdapter);
-        LinearLayoutManager linearLayoutManager= new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(linearLayoutManager);
         todoAdapter.notifyDataSetChanged();
@@ -111,51 +117,21 @@ public class MainActivity extends AppCompatActivity {
 //                                finish();
 //                                startActivity(getIntent());
 //                                overridePendingTransition(0, 0);
-                                  MainActivity.this.recreate();
+                                MainActivity.this.recreate();
                             }
                         });
                 AlertDialog dialog = builder.create();
                 dialog.show();
             }
         });
-
-
     }
 
     public void menuDrawer(View view) {
-
         drawer.openDrawer(Gravity.START);
-
     }
 
-    public void changeName(){
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        LayoutInflater inflater = MainActivity.this.getLayoutInflater();
-        final View view1 = inflater.inflate(R.layout.change_name_dialogue, null);
-        builder.setMessage("Set Your Name");
-        final EditText changeName = view1.findViewById(R.id.change_name_et);
-        builder.setView(view1)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        final EasyDB easyDBName = EasyDB.init(MainActivity.this, "NAMEDB", null, 1)
-                                .setTableName("NAME TABLE")
-                                .addColumn(new Column("NAME", new DataType()._text_().notNull().done()))
-                                .doneTableColumn();
+    public void changeName() {
 
-                        easyDBName.addData("NAME", changeName.getText().toString())
-                                .doneDataAdding();
-
-                        Cursor cursorName = easyDBName.getAllData();
-
-                        while(cursorName.moveToNext()){
-                            name = cursorName.getString( 1 );
-                            whosTask.setText(name + "'s Tasks");
-                        }
-                    }
-                });
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
 
 }

@@ -2,9 +2,13 @@ package com.etherealmobile.mytasks;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 
@@ -17,12 +21,18 @@ public class CompletedTodoActivity extends AppCompatActivity {
     private String todoTextsDb;
     private ArrayList<TodoModel> todos = new ArrayList<>();
 
+    private EasyDB completedListDB;
+    private DrawerLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_completed_todo);
 
-        final EasyDB completedListDB = EasyDB.init(this, "TODODBCOMPLETED", null, 1)
+        Toolbar toolbar = findViewById(R.id.app_bar_completed);
+        setSupportActionBar(toolbar);
+
+        completedListDB = EasyDB.init(this, "TODODBCOMPLETED", null, 1)
                 .setTableName("completedListDB")
                 .addColumn(new Column("COMPLETED", new DataType()._text_().notNull().done()))
                 .doneTableColumn();
@@ -41,5 +51,24 @@ public class CompletedTodoActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager= new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         todoAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu2, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected( item );
+        int id = item.getItemId();
+        switch (id){
+            case R.id.delete_all_completed:
+                completedListDB.deleteAllDataFromTable();
+                CompletedTodoActivity.this.recreate();
+                break;
+        }
+        return true;
     }
 }
