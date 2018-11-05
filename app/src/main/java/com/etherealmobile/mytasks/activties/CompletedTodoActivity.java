@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import com.etherealmobile.mytasks.R;
 import com.etherealmobile.mytasks.adapter.TodoAdapter;
+import com.etherealmobile.mytasks.adapter.TodoCompletedAdapter;
 import com.etherealmobile.mytasks.model.TodoModel;
 
 import java.util.ArrayList;
@@ -50,11 +51,11 @@ public class CompletedTodoActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.completed_recyclerView);
 
-        final TodoAdapter todoAdapter = new TodoAdapter(todos, this);
-        recyclerView.setAdapter(todoAdapter);
+        final TodoCompletedAdapter todoCompletedAdapter = new TodoCompletedAdapter(todos, this);
+        recyclerView.setAdapter(todoCompletedAdapter);
         LinearLayoutManager linearLayoutManager= new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        todoAdapter.notifyDataSetChanged();
+        todoCompletedAdapter.notifyDataSetChanged();
     }
 
     @Override
