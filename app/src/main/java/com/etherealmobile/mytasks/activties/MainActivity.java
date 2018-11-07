@@ -24,6 +24,7 @@ import com.etherealmobile.mytasks.R;
 import com.etherealmobile.mytasks.Singletone.EasyDBSingleton;
 import com.etherealmobile.mytasks.adapter.TodoAdapter;
 import com.etherealmobile.mytasks.model.TodoModel;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     public String todoTextsDb;
     public int rowID;
     private TextView whosTask, task;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private ArrayList<TodoModel> todos = new ArrayList<>();
     private DrawerLayout drawer;
@@ -41,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        task = findViewById(R.id.item_text);
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        task = findViewById(R.id.item_text);
         whosTask = findViewById(R.id.whos_task_tv);
 
         whosTask.setText("My Tasks");
